@@ -1,27 +1,44 @@
-import { Image, Pressable, StyleSheet, Text, View } from "react-native";
-import React from "react";
+import { Alert, Image, Pressable, StyleSheet, View } from "react-native";
+import React, { FC } from "react";
 import { s, vs } from "react-native-size-matters";
 import AppText from "../texts/AppText";
 import { AppColors } from "../../styles/colors";
 import { AppFonts } from "../../styles/fonts";
-import {AntDesign,FontAwesome} from "@expo/vector-icons";
+import { AntDesign, FontAwesome } from "@expo/vector-icons";
 
-const tempItem = {
-  id: 1,
-  price: 1199,
-  title: "iPhone 16 Pro Max",
-  imageURL:
-    "https://2b.com.eg/media/catalog/product/cache/661473ab953cdcdf4c3b607144109b90/m/a/ma658.jpg",
-};
+// const tempItem = {
+//   id: 1,
+//   price: 1199,
+//   title: "iPhone 16 Pro Max",
+//   imageURL:
+//     "https://2b.com.eg/media/catalog/product/cache/661473ab953cdcdf4c3b607144109b90/m/a/ma658.jpg",
+// };
 
-const CartItem = () => {
+interface ICartItem {
+  title: string;
+  price: string | number;
+  imageURL: string;
+  qty: number;
+  onDeletePress: () => void;
+  onIncreasePress: () => void;
+  onReducePress: () => void;
+}
+const CartItem: FC<ICartItem> = ({
+  title,
+  price,
+  imageURL,
+  qty,
+  onDeletePress,
+  onIncreasePress,
+  onReducePress,
+}) => {
   return (
     <View style={styles.container}>
       {/* Image Container */}
       <View style={styles.imageContainer}>
         <Image
           source={{
-            uri: tempItem.imageURL,
+            uri: imageURL,
           }}
           style={styles.image}
         />
@@ -29,23 +46,26 @@ const CartItem = () => {
 
       {/* Details Container */}
       <View style={styles.detailsContainer}>
-        <AppText style={styles.textTitle}>{tempItem.title}</AppText>
-        <AppText style={styles.textPrice}> {tempItem.price}</AppText>
+        <AppText style={styles.textTitle}>{title}</AppText>
+        <AppText style={styles.textPrice}>{price}</AppText>
 
         <View style={styles.qtyContainer}>
-          <Pressable style={styles.iconButton}>
-            <FontAwesome name="plus" size={s(14)} color={AppColors.primary} />
+          <Pressable style={styles.iconButton} onPress={onIncreasePress}>
+            <FontAwesome name="plus" size={s(10)} color={AppColors.primary} />
           </Pressable>
-          <AppText style={styles.txtQty}>1</AppText>
-          <Pressable style={styles.iconButton}>
-            <FontAwesome name="minus" size={s(14)} color={AppColors.primary} />
+          <AppText style={styles.txtQty}>{qty}</AppText>
+          <Pressable style={styles.iconButton} onPress={onReducePress}>
+            <FontAwesome name="minus" size={s(10)} color={AppColors.primary} />
           </Pressable>
         </View>
       </View>
 
       {/* Delete Container */}
       <View style={styles.deleteContainer}>
-        <Pressable style={styles.deleteButton}>
+        <Pressable
+          style={styles.deleteButton}
+          onPress={onDeletePress}
+        >
           <AntDesign name="delete" size={s(14)} color={AppColors.red} />
           <AppText style={styles.textDelete}>Delete</AppText>
         </Pressable>
@@ -102,7 +122,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   qtyContainer: {
-    justifyContent: "center",
+    justifyContent: "space-between",
     alignItems: "center",
     flexDirection: "row",
     paddingHorizontal: s(5),
@@ -126,5 +146,7 @@ const styles = StyleSheet.create({
     flex: 1,
     textAlign: "center",
     color: AppColors.primary,
+    paddingHorizontal: 6,
+    fontSize: s(14),
   },
 });
